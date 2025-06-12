@@ -1,2 +1,2 @@
 # Microcomputer-principle-and-interface-technology-work
-Hangzhou Dianzi University's microcomputer principle operation
+In the classroom, learn some homework on the principles of microcontrollers and microcomputers
