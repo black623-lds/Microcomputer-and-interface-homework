@@ -1,0 +1,171 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              06/12/2025 09:49:14 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: F:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          #include "MatrixKey.h"
+   4          
+   5          unsigned char KeyNum;
+   6          unsigned int Password,Password1,Count,Count1,flag,Password_Data,Change_flag,i;
+   7          sbit red = P2^0;
+   8          sbit green = P2^1;
+   9          sbit keyled = P2^4;
+  10          
+  11          void main()
+  12          {
+  13   1        red = 0;
+  14   1        green = 0;
+  15   1        keyled = 0;
+  16   1        i = 0;
+  17   1        while(1)
+  18   1        {
+  19   2          KeyNum=MatrixKey();
+  20   2          if(KeyNum)
+  21   2          {
+  22   3            if(flag == 0)
+  23   3            {
+  24   4              if(KeyNum<=10)                //如果S1~S10按键按下，输入密码
+  25   4              {
+  26   5                keyled = 1;
+  27   5                Delay(100);
+  28   5                keyled = 0;
+  29   5                if(Count<4)               //如果输入次数小于4
+  30   5                {
+  31   6                  Password*=10;           //密码左移一位
+  32   6                  Password+=KeyNum%10;        //获取一位密码
+  33   6                  Count++;  //计次加一
+  34   6                  Password_Data++;
+  35   6                }
+  36   5              }
+  37   4              if(KeyNum==11)                //如果S11按键按下，确认
+  38   4              {
+  39   5                keyled = 1;
+  40   5                Delay(100);
+  41   5                keyled = 0;
+  42   5                if( Change_flag == 0)           //没修改密码之前此标志位一直为0 修改密码之后此标志�
+             -��为1 进入另外一个判断
+  43   5                {
+  44   6                  if(Password==1234)          //如果密码等于正确密码
+  45   6                  {
+  46   7                    Password=0;           //密码清零
+  47   7                    Count=0;            //计次清零
+  48   7                    red = 0;
+  49   7                    green = 1;
+  50   7                    Delay(2000);          //延时
+  51   7                    Password_Data=0;
+  52   7                  }
+  53   6                  else                //否则
+C51 COMPILER V9.59.0.0   MAIN                                                              06/12/2025 09:49:14 PAGE 2   
+
+  54   6                  {
+  55   7                    Password=0;           //密码清零
+  56   7                    Count=0;            //计次清零
+  57   7                    Password_Data=0;
+  58   7                    i++;
+  59   7                  }
+  60   6                }
+  61   5                if( Change_flag == 1 )          //修改密码之后为1 进入此判断
+  62   5                {
+  63   6                  if(Password==Password1)       //如果密码等于正确密码
+  64   6                  {
+  65   7                    green = 1;
+  66   7                    Password=0;           //密码清零
+  67   7                    Count=0;            //计次清零
+  68   7                    Password_Data=0;
+  69   7                  }
+  70   6                  else                //否则
+  71   6                  {
+  72   7                    green = 0;
+  73   7                    Password=0;           //密码清零
+  74   7                    Count=0;            //计次清零
+  75   7                    Password_Data=0;
+  76   7                    i++;
+  77   7                  }
+  78   6                }
+  79   5              }
+  80   4              if(KeyNum==12)                //如果S12按键按下，取消
+  81   4              {
+  82   5                keyled = 1;
+  83   5                Delay(100);
+  84   5                keyled = 0;
+  85   5                Password=0;               //密码清零
+  86   5                Count=0;                //计次清零
+  87   5                Password_Data=0;
+  88   5              }
+  89   4              if(KeyNum==14)                //修改密码按键
+  90   4              {
+  91   5                Password1=0;              //新密码清除
+  92   5                flag = 2;                 //修改密码标志位
+  93   5              }
+  94   4            }
+  95   3            if(flag == 2)                   //修改密码标志位判断
+  96   3            {
+  97   4              if(KeyNum<=10)                //如果S1~S10按键按下，输入密码
+  98   4              {
+  99   5                if(Count1<4)              //如果输入次数小于4
+ 100   5                {
+ 101   6                  Password1*=10;            //密码左移一位
+ 102   6                  Password1+=KeyNum%10;       //获取一位密码
+ 103   6                  Count1++;             //计次加1
+ 104   6                  Password_Data++;          //清除*号显示位置
+ 105   6                }
+ 106   5              }
+ 107   4              if(KeyNum==11)                //如果S11按键按下，确认
+ 108   4              {
+ 109   5                keyled = 1;
+ 110   5                Delay(100);
+ 111   5                keyled = 0;
+ 112   5                Count1 = 0;               //输入密码位数清除
+ 113   5                flag = 0;                 //输入密码标志位
+ 114   5                Password_Data = 0;            //清除*号显示位置
+ 115   5                Change_flag = 1;            //更新密码判断标志位
+C51 COMPILER V9.59.0.0   MAIN                                                              06/12/2025 09:49:14 PAGE 3   
+
+ 116   5              }
+ 117   4              if(KeyNum==12)                //如果S12按键按下，取消
+ 118   4              {
+ 119   5                Password1=0;              //密码清零
+ 120   5                Count1=0;               //计次清零
+ 121   5                Password_Data=0;            //清除*号显示位置
+ 122   5              }
+ 123   4            }
+ 124   3            if(KeyNum==13)                  //上锁解锁
+ 125   3            {
+ 126   4              keyled = 1;
+ 127   4              Delay(100);
+ 128   4              keyled = 0;
+ 129   4              flag = !flag;                 //上锁解锁标志位
+ 130   4              if(flag==1)
+ 131   4              {
+ 132   5                red = 1;
+ 133   5                green = 0;
+ 134   5              }
+ 135   4              else
+ 136   4              {
+ 137   5                red = 0;
+ 138   5              }
+ 139   4            }
+ 140   3          }
+ 141   2        }
+ 142   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    486    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     17    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
